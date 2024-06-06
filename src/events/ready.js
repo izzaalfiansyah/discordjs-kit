@@ -1,6 +1,9 @@
+const { ActivityType } = require('discord.js');
+
 const terminal = require('../terminal');
 const mongoose = require('mongoose');
 const database = process.env.database;
+const guildID = process.env.guildID;
 
 module.exports = {
     name: 'ready',
@@ -20,6 +23,22 @@ module.exports = {
         // End of Database Connection
 
         terminal.success(`✅ ${client.user.tag} is Online`);
+
+        // Set the bot's activity
+        setInterval(() => {
+            const guild = client.guilds.cache.get(guildID);
+            const status = `${guild.memberCount} Members`;
+
+            client.user.setPresence({
+                activities: [
+                    {
+                        name: `${status}`,
+                        type: ActivityType.Watching
+                    }
+                ]
+            });
+        }, 5000);
+        // Set the bot's activity
 
         async function pickPresence() {
             const option = Math.floor(Math.random() * statusArray.length);
